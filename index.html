@@ -34,6 +34,34 @@
             }
         </script>
         
+        <!--ETH price ticker-->
+        <script>
+            var previous=0;
+            function update(previous){
+                var theUrl = "https://poloniex.com/public?command=returnTicker";
+                var xmlHttp = null;
+
+                xmlHttp = new XMLHttpRequest();
+                xmlHttp.open( "GET", theUrl, false );
+                xmlHttp.send( null );
+                var response  = xmlHttp.responseText;
+                response = response.substring(response.indexOf("USDT_ETH\":{\"last\":\"")+19);
+                response = response.substring(0,response.indexOf("\""));
+                var color="black";
+                if (previous<response){
+                    color="green";
+                } else if(previous>response){
+                    color="red";
+                }
+                document.getElementById("name").innerHTML="<span style=\"color:"+color+";font-family:Helvetica\">"+response+"</span>";
+                return response;
+            }
+            function load(){
+                previous = update(previous);
+                setTimeout(load,3000);
+            }
+        </script>
+        
         <script>
             var counter = 0;
             var stringValue="";
@@ -42,18 +70,28 @@
             if(e.keyCode==105){
                 counter++;
                 stringValue+="i";
-            }
-            if(e.keyCode==99){
+            } else if(e.keyCode==99){
               counter++;
               stringValue+="c";
-            }
-            if(e.keyCode==117){
+            } else if(e.keyCode==101){
+              counter++;
+              stringValue+="e";
+            } else if(e.keyCode==117){
                 counter++;
                 stringValue+="u";
+            } else if(e.keyCode==116){
+                counter++;
+                stringValue+="t";
+            } else if(e.keyCode==104){
+                counter++;
+                stringValue+="h";
             }
             if(stringValue.indexOf("icu")!=-1){
                 stringValue="";
                 window.open("http://instantcena.com");  
+            } else if(stringValue.indexOf("eth")!=-1){
+                 load();
+                document.getElementById("secondHeadline").innerHTML="ETH price $USD"
             } else if(counter==3){
                 counter=0;
                 stringValue="";
@@ -67,8 +105,8 @@
     <body onload="setYear()">
         <section class="fullHeight" id="welcome">
             <div class="text-center vertical-center blockRel"> 
-            <p class="bigText">Hey! I'm Justin</p>
-            <p class="secondHeadline">I'm a software engineering student.</p>
+            <p class="bigText" id="name">Hey! I'm Justin</p>
+            <p class="secondHeadline" id="secondHeadline">I'm a software engineering student.</p>
         </div>
         </section>
         <section id="description">
